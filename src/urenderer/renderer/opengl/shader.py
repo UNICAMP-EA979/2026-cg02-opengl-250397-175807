@@ -68,7 +68,7 @@ class Shader:
 
             ## SEU CÓDIGO AQUI ######################################################
             # Cria e compila o vertex shader
-            vertex_shader =
+            vertex_shader = GL.glCreateShader(GL.GL_VERTEX_SHADER)
             #########################################################################
 
             vertex_shader = cast(int, vertex_shader)
@@ -76,7 +76,7 @@ class Shader:
 
             ## SEU CÓDIGO AQUI ######################################################
             # Cria e compila o fragment shader
-            fragment_shader =
+            fragment_shader = GL.glCreateShader(GL.GL_FRAGMENT_SHADER)
             #########################################################################
 
             fragment_shader = cast(int, fragment_shader)
@@ -84,7 +84,10 @@ class Shader:
 
             ## SEU CÓDIGO AQUI ######################################################
             # Cria e linka o programa
-            shader_program =
+            shader_program = GL.glCreateProgram()
+            GL.glAttachShader(shader_program, vertex_shader)
+            GL.glAttachShader(shader_program, fragment_shader)
+            GL.glLinkProgram(shader_program)
             #########################################################################
 
             shader_program = cast(int, shader_program)
@@ -104,7 +107,7 @@ class Shader:
         '''
         ## SEU CÓDIGO AQUI ######################################################
         # Usa o programa compilado e linkado anteriormente no contexto atual
-
+        GL.glUseProgram(self.shader_program)
         #########################################################################
 
     def _get_uniform_location(self, name: str) -> int:
@@ -143,14 +146,17 @@ class Shader:
         # https://registry.khronos.org/OpenGL-Refpages/gl4/html/glUniform.xhtml
 
         if isinstance(value, bool):
-            ...
+            if value == True:
+                GL.glUniform1i(location, 1)
+            else:
+                GL.glUniform1i(location, 0)
         elif isinstance(value, int):
-            ...
+            GL.glUniform1i(location, value)
         elif isinstance(value, float):
-            ...
+            GL.glUniform1f(location, value)
         elif isinstance(value, np.ndarray):
             if value.dtype == np.float32 and value.shape == (4, 4):
-                ...
+                GL.glUniformMatrix4fv(location, 16, False, value)
             else:
                 raise ValueError(f"Value type {type(value)} not supported")
         else:
