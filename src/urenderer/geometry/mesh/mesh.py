@@ -85,7 +85,7 @@ class Mesh:
         '''
         ## SEU CÓDIGO AQUI ######################################################
         # Faça bind do VAO e EBO e envie os dados do EBO
-
+        self._ebo = GL.glBindVertexArrays(self._vao)
         #########################################################################
 
     def _update_vbo(self):
