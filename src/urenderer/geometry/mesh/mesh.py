@@ -85,14 +85,19 @@ class Mesh:
         '''
         ## SEU CÓDIGO AQUI ######################################################
         # Faça bind do VAO e EBO e envie os dados do EBO
-        self._ebo = GL.glBindVertexArrays(self._vao)
+        # Bind do VAO
+        GL.glBindVertexArray(self._vao)
+        # Bind do EBO
+        GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, self._ebo)
+        # Envia os dados do EBO
+        GL.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, self._index.nbytes, self._index, GL.GL_STATIC_DRAW)
         #########################################################################
 
     def _update_vbo(self):
         '''
         Updates the mesh's vertex buffer object (VBO).
 
-        The VBO is stored in a in a standardized format for all meshes:
+        The VBO is stored in a standardized format for all meshes:
         [x, y, z, u, v, r, g, b , nx, ny, nz]
 
         Where x, y, z is the vertex position (location=0),
@@ -111,7 +116,8 @@ class Mesh:
 
         ## SEU CÓDIGO AQUI ######################################################
         # Bind the VAO and VBO
-
+        GL.glBindVertexArray(self._vao)
+        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, self._vbo)
         #########################################################################
 
         check_type_dict = {"vertex": self._vertex,
@@ -138,14 +144,31 @@ class Mesh:
 
         ## SEU CÓDIGO AQUI ######################################################
         # Envia os dados para o buffer
+        GL.glBufferData(GL.GL_ARRAY_BUFFER, data.nbytes, data, GL.GL_STATIC_DRAW)
 
         # Configura os atributos do buffer
+        stride = n_item * 4
+        # Configurando o atributo 0, que é o x, y, z(tam 3)
+        GL.glVertexAttribPointer(0, 3, GL.GL_FLOAT, GL.GL_FALSE, stride, c_void_p(0))
+        GL.glEnableVertexAttribArray(0)
+
+        offset = 3 * 4  # pula o offset
+        # Configurando o atributo 1, que é o uv(tam 2)
+        GL.glVertexAttribPointer(1, 2, GL.GL_FLOAT, GL.GL_FALSE, stride, c_void_p(offset))
+        GL.glEnableVertexAttribArray(1)
+
+        offset += 2 * 4 # pula o offset de novo
 
         if self._color is not None:
-            ...
+            # Configurando o atribto 2, que é o rgb(tam 3), mas só se existir
+            GL.glVertexAttribPointer(2, 3, GL.GL_FLOAT, GL.GL_FALSE, stride, c_void_p(offset))
+            GL.glEnableVertexAttribArray(2)
+            offset += 3 * 4 # pula o offset de novo
 
         if self._normal is not None:
-            ...
+            # Configurando o atribto 3, que é o nx, ny, nz(tam 3), mas só se existir
+            GL.glVertexAttribPointer(3, 3, GL.GL_FLOAT, GL.GL_FALSE, stride, c_void_p(offset))
+            GL.glEnableVertexAttribArray(3)
 
         #########################################################################
 
@@ -158,7 +181,12 @@ class Mesh:
         '''
         ## SEU CÓDIGO AQUI ######################################################
         # Realiza o bind do VAO ao contexto e desenha a geometria contida nele
+        # Aqui faz o bind do VAO
+        GL.glBindVertexArray(self._vao)
 
+        # Aqui faz o desenho dos triangulos de acordo com a quantidade de elementos salvos no objeto
+        GL.glDrawElements(GL.GL_TRIANGLES, len(self._index), GL.GL_UNSIGNED_INT, None)
+        
         #########################################################################
 
     @property

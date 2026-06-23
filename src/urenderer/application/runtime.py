@@ -69,6 +69,8 @@ class Runtime:
         self._renderer.start(self.camera, self._view_matrix, self._name)
 
         # Traverse the scene tree.
+        # Carrega a raiz da árvore e a sua transformação com uma tupla
+        # nodes é uma lista de tuplas
         nodes = deque([(self.scene, self.scene.model_transform)])
         while len(nodes) != 0:
             node, transformation = nodes.pop()
@@ -79,6 +81,8 @@ class Runtime:
                 # Crie a transformação do nó filho, concatenando com as transformações anteriores
 
                 # Create child transformation
+                # Transformation é a transformação do pai
+                # child.model_transform é a transformação do filho
                 child_transformation = transformation @ child.model_transform
 
                 #########################################################################
