@@ -22,7 +22,13 @@ if __name__ == "__main__":
 
     ## SEU CÓDIGO AQUI ######################################################
     # Defina as cores dos vértices
+    vertex_colors = np.array([
+        [1.0, 0.0, 0.0],  # Vermelho (RGBA)
+        [0.0, 1.0, 0.0],  # Verde (RGBA)
+        [0.0, 0.0, 1.0]   # Azul (RGBA)
+    ], dtype=np.float32)
 
+    node.render_data["mesh"].color = vertex_colors
     #########################################################################
 
     runtime.scene.add_child(node)

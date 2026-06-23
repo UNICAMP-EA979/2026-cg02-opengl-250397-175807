@@ -31,7 +31,8 @@ if __name__ == "__main__":
     # associada à variável texture0
     #
     # Utilize urenderer.renderer.opengl.Texture.load_file e material.set_texture
-
+    textura = urenderer.renderer.opengl.Texture.load_file("textures/baboon.png")
+    material.set_texture(texture=textura, name="texture0", unit=0)
     #########################################################################
 
     cube = urenderer.node.Node()

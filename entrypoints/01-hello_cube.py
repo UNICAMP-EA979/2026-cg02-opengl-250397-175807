@@ -1,6 +1,8 @@
 import numpy as np
 import urenderer
 
+print(urenderer.__file__)
+
 # Renderiza um cubo branco utilizando o OpenGL renderer.
 #
 # Você precisa escrever o shader 01-vertex.vs para realizar a transformação de coordenadas (model -> world -> view -> projection )
@@ -8,7 +10,7 @@ import urenderer
 
 if __name__ == "__main__":
     urenderer.utils.clear_workdir("01-hello_cube")
-    renderer = urenderer.renderer.OpenGLRenderer(1920, 1080)
+    renderer = urenderer.renderer.opengl.OpenGLRenderer(1920, 1080)
     renderer.background_color = np.array([0, 0, 0, 1], np.float32)
     runtime = urenderer.application.Runtime(renderer, name="01-hello_cube")
 
