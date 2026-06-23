@@ -5,6 +5,7 @@ from typing import Callable
 import numpy as np
 from scipy.spatial.transform import Rotation
 
+
 class Node:
     '''
     Scene node.
@@ -44,16 +45,16 @@ class Node:
         # Crie as matrizes de transformação e concatene elas
 
         # Scale matrix
-        S = np.eye(4)
+        S = np.eye(4)   # Cria uma matriz diagonal 4x4 de valor 1
 
         S[0, 0] = self.scale[0]
         S[1, 1] = self.scale[1]
         S[2, 2] = self.scale[2]
-
-
+        # S[3,3] = 1
+        
         # Translation matrix
         T = np.eye(4)
-        
+
         T[0, 3] = self.translation[0]
         T[1, 3] = self.translation[1]
         T[2, 3] = self.translation[2]
@@ -66,7 +67,7 @@ class Node:
         rotation = Rotation.from_euler('xyz', self.rotation, degrees=True)
         R[0:3, 0:3] = rotation.as_matrix()
 
-        final_transformation = T @ (R @ S)
+        final_transformation = T @ (R @ S)  # @ é o produto de matrizes
 
         # Normaliza
         final_transformation = final_transformation/final_transformation[3][3]

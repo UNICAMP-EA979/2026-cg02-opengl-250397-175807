@@ -49,13 +49,24 @@ class OpenGLRenderer(Renderer):
 
         ## SEU CÓDIGO AQUI ######################################################
         # Inicializa o GLFW, core profile e OpenGL 3.3
-
+        if not glfw.init():
+            raise RuntimeError("Falha ao inicializar a biblioteca GLFW")
+        glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+        glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
+        glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
+        glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, GL.GL_TRUE)
         #########################################################################
 
         ## SEU CÓDIGO AQUI ######################################################
         # Cria a janela, associando ela ao contexto
         # e configurando o tamanho dela no OpenGl
-
+        window = glfw.create_window(self.screen_width, self.screen_height, "EA979 - Hello Cube", None, None)
+        if not window:
+            glfw.terminate()
+            raise RuntimeError("Falha ao criar a janela GLFW")
+            
+        glfw.make_context_current(window)
+        GL.glViewport(0, 0, self.screen_width, self.screen_height)
         #########################################################################
 
         glfw.set_framebuffer_size_callback(
@@ -96,7 +107,9 @@ class OpenGLRenderer(Renderer):
         ## SEU CÓDIGO AQUI ######################################################
         # Limpe os buffers de cor e profundidade (COLOR_BUFFER e DEPTH_BUFFER)
         # Para o de cor, utilize a cor self.background_color
-
+        GL.glClearColor(self.background_color[0], self.background_color[1], 
+                        self.background_color[2], self.background_color[3])
+        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
         #########################################################################
 
     def validate(self, node: Node) -> bool:
@@ -137,7 +150,11 @@ class OpenGLRenderer(Renderer):
         # uniform para todo uso do material.
         #
         # Atente-se que os valores precisam ser convertidos para np.float32
-
+        material.use()
+        
+        material.shader.set_uniform("modelTransformation", model_transformation.astype(np.float32).T)
+        material.shader.set_uniform("viewTransformation", self._view_matrix.astype(np.float32).T)
+        material.shader.set_uniform("projectionMatrix", self._projection_matrix.astype(np.float32).T)
         #########################################################################
 
         mesh.draw()
@@ -171,7 +188,7 @@ class OpenGLRenderer(Renderer):
 
         ## SEU CÓDIGO AQUI ######################################################
         # Troque o buffer frontal e traseiro, mostrando o novo buffer renderizado
-
+        glfw.swap_buffers(self._window)
         #########################################################################
 
         glfw.poll_events()
